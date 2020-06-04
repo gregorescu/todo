@@ -5,3 +5,13 @@
     top: 0;
     left: 0;
 }
+
+.board-list{
+    display: inline-block;
+    vertical-align: top;
+    width: 400px;
+    background-color: #eeeeee;
+    padding: 15px;
+    height: 100%;
+    border-right: 2px solid black;
+}

@@ -1,4 +1,17 @@
-<app-list [items]="toDoItemList" (showTaskPopup)="showTaskPopup()" (showUpdatePopup)="showUpdatePopup($event)"></app-list>
+<app-list class="board-list" 
+[items]="toDoItemList.list" 
+(showTaskPopup)="showTaskPopup(toDoItemList)" 
+(showUpdatePopup)="showUpdatePopup($event, toDoItemList)"></app-list>
+
+<app-list class="board-list" 
+[items]="inProgressItemList.list" 
+(showTaskPopup)="showTaskPopup(inProgressItemList)" 
+(showUpdatePopup)="showUpdatePopup($event, inProgressItemList)"></app-list>
+
+<app-list class="board-list" 
+[items]="doneItemList.list" 
+(showTaskPopup)="showTaskPopup(doneItemList)" 
+(showUpdatePopup)="showUpdatePopup($event, doneItemList)"></app-list>
 
 <app-task-form 
     [itemForUpdate]="itemForUpdate" 
