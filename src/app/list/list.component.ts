@@ -10,7 +10,7 @@ export class ListComponent implements OnInit {
   @Input() items: Array<ListItem>;
   @Output() showTaskPopup = new EventEmitter();
   @Output() showUpdatePopup = new EventEmitter<ListItem>();
-  
+  @Output() dragStart = new EventEmitter<ListItem>();
 
   constructor() { }
 
@@ -22,6 +22,11 @@ export class ListComponent implements OnInit {
   }
 
   showEditItem(item:ListItem) {
+    console.log("click")
     this.showUpdatePopup.emit(item);
+  }
+
+  itemDragStart(item:ListItem) {
+    this.dragStart.emit(item);
   }
 }

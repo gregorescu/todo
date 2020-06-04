@@ -1,17 +1,29 @@
 <app-list class="board-list" 
 [items]="toDoItemList.list" 
 (showTaskPopup)="showTaskPopup(toDoItemList)" 
-(showUpdatePopup)="showUpdatePopup($event, toDoItemList)"></app-list>
+(showUpdatePopup)="showUpdatePopup($event, toDoItemList)"
+(dragStart)="itemDragStarted($event, toDoItemList)"
+
+(dragover)="itemDragOver($event)"
+(drop)="itemDrop($event, toDoItemList)"></app-list>
 
 <app-list class="board-list" 
 [items]="inProgressItemList.list" 
 (showTaskPopup)="showTaskPopup(inProgressItemList)" 
-(showUpdatePopup)="showUpdatePopup($event, inProgressItemList)"></app-list>
+(showUpdatePopup)="showUpdatePopup($event, inProgressItemList)"
+(dragStart)="itemDragStarted($event, inProgressItemList)"
+
+(dragover)="itemDragOver($event)"
+(drop)="itemDrop($event, inProgressItemList)"></app-list>
 
 <app-list class="board-list" 
 [items]="doneItemList.list" 
 (showTaskPopup)="showTaskPopup(doneItemList)" 
-(showUpdatePopup)="showUpdatePopup($event, doneItemList)"></app-list>
+(showUpdatePopup)="showUpdatePopup($event, doneItemList)"
+(dragStart)="itemDragStarted($event, doneItemList)"
+
+(dragover)="itemDragOver($event)"
+(drop)="itemDrop($event, doneItemList)"></app-list>
 
 <app-task-form 
     [itemForUpdate]="itemForUpdate" 

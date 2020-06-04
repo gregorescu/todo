@@ -1,5 +1,11 @@
 <!-- <p>list works!</p> -->
 
-<app-list-item *ngFor="let item of items" class="list-item {{item.status | itemClass}}" [model]=item (click)="showEditItem(item)"></app-list-item>
+<app-list-item 
+    *ngFor="let item of items" 
+    class="list-item {{item.status | itemClass}}" 
+    draggable="true" 
+    [model]=item 
+    (click)="showEditItem(item)" 
+    (dragstart)="itemDragStart(item)"></app-list-item>
 
 <p class="list__add-button" (click)="showAddTaskPopup()">Add new task</p>

@@ -15,6 +15,11 @@ export type ItemListType = {
   list: Array < ListItem >
 };
 
+export type draggedDataType = {
+  item: ListItem,
+  fromList: ItemListType
+}
+
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
@@ -27,7 +32,8 @@ export class BoardComponent implements OnInit {
 
   updatedList: ItemListType = null;
 
-  // toDoItemList: 
+  draggedData: draggedDataType = null;
+
 
   toDoItemList: ItemListType = {
     id: uuid(),
@@ -138,5 +144,39 @@ export class BoardComponent implements OnInit {
       }
     }
     this.hideTaskPopup();
+  }
+
+  itemDragStarted(draggedItem:ListItem, fromList: ItemListType) {
+    this.draggedData = {
+      item: draggedItem,
+      fromList: fromList
+    }
+  }
+
+  itemDragOver(event) {
+    event.preventDefault();
+  }
+
+  itemDrop(event, toList:ItemListType) {
+    event.preventDefault();
+
+    let fromList: ItemListType = this.draggedData.fromList;
+    let item: ListItem = this.draggedData.item;
+
+    if(!toList) {
+      return;
+    }
+
+    if(fromList.id === toList.id) {
+      return;
+    }
+
+    this.updatedList = fromList;
+    this.deleteTask(item);
+
+    this.updatedList = toList;
+    this.addNewTask(item);
+
+    this.updatedList = null;
   }
 }
