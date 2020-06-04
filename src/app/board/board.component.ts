@@ -105,14 +105,18 @@ export class BoardComponent implements OnInit {
     this.isTaskFormVisible = false;
   }
 
-  addNewTask(newTaskData) {
+  addNewTask(newTaskData, index:number | null = null) {
     let newTask: ListItem = {
       name: newTaskData.name,
       status: newTaskData.status,
       id: uuid()
     };
 
-    this.updatedList.list.push(newTask);
+    if(index !== null) {
+      this.updatedList.list.splice(index, 0, newTask);
+    } else {
+      this.updatedList.list.push(newTask);
+    }
 
     this.hideTaskPopup();
   }
@@ -153,11 +157,11 @@ export class BoardComponent implements OnInit {
     }
   }
 
-  itemDragOver(event) {
+  itemDragOver(event:DragEvent) {
     event.preventDefault();
   }
 
-  itemDrop(event, toList:ItemListType) {
+  itemDrop(event:DragEvent, toList:ItemListType) {
     event.preventDefault();
 
     let fromList: ItemListType = this.draggedData.fromList;
@@ -167,16 +171,47 @@ export class BoardComponent implements OnInit {
       return;
     }
 
+    //Detectie pe index pe lista
+    let children: HTMLCollection = (event.currentTarget as HTMLElement).children;
+    let index:number = 0;
+    for(let i = 0; i < children.length; i++) {
+      let child: Element = children[i];
+      let clientRect = child.getBoundingClientRect();
+
+      if(clientRect.y < event.clientY){
+        index = i;
+      }
+    }
+
+    let oldIndex = 0;
+
     if(fromList.id === toList.id) {
-      return;
+      oldIndex = this.getItemIndex(fromList, item);
+
+      if(oldIndex < index) {
+        index--;
+      }
     }
 
     this.updatedList = fromList;
     this.deleteTask(item);
 
     this.updatedList = toList;
-    this.addNewTask(item);
+    this.addNewTask(item, index);
 
     this.updatedList = null;
+  }
+
+  getItemIndex(itemList:ItemListType, searchedItem:ListItem): number {
+    let list: Array<ListItem> = itemList.list;
+
+    for (let i = 0; i < list.length; i++) {
+      let item = list[i];
+      if (item.id === searchedItem.id) {
+        return i;
+      }
+    }
+
+    return -1;
   }
 }
