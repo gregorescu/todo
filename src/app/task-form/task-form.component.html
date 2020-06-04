@@ -1,0 +1,19 @@
+<div class="add-task-form__overlay" (click)="backgroundClicked()"></div>
+<div class="add-task-form__content">
+    <label>
+        Name:
+        <input type="text" [formControl]="name">
+    </label><br/>
+    <label>
+        Status:
+        <select [formControl]="status">
+            <option *ngFor="let status of statusList" [value]="status.name">{{status.name}}</option>
+        </select>
+    </label>
+
+
+    <p class="form-submit" *ngIf="addItem==true" (click)="submit()">Add New Task</p>
+
+    <p class="form-submit" *ngIf="addItem==false" (click)="update()">Update</p>
+    <p class="form-submit" *ngIf="addItem==false" (click)="delete()">Delete</p>
+</div>

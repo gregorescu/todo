@@ -1,0 +1,49 @@
+.list-item {
+    padding: 5px;
+    background-color: #cccccc;
+    border: 2px solid #999999;
+    border-radius: 5px;
+    width: fit-content;
+
+    margin-bottom: 10px;
+    display: block;
+
+    cursor: pointer;
+}
+
+.list-item:last-of-type {
+    margin-bottom: 0px;
+}
+
+.list-item--todo {
+    background-color: #ff8b78;
+    border: 2px solid #422521;
+}
+
+.list-item--inprogress {
+    background-color: #b3bafc;
+    border: 2px solid #2b2e4c;
+}
+
+.list-item--done {
+    background-color: #a0ff9e;
+    border: 2px solid #284327;
+}
+
+.list-item--blocked {
+    background-color: #ff0000;
+    border: 2px solid #251010;
+}
+
+.list__add-button {
+    padding: 5px;
+    background-color: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 5px;
+    width: fit-content;
+
+    margin-bottom: 10px;
+    display: block;
+
+    cursor: pointer;
+}

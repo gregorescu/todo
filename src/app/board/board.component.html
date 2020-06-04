@@ -1,0 +1,12 @@
+<app-list [items]="toDoItemList" (showTaskPopup)="showTaskPopup()" (showUpdatePopup)="showUpdatePopup($event)"></app-list>
+
+<app-task-form 
+    [itemForUpdate]="itemForUpdate" 
+    [addItem]="showAddItem" 
+    class="add-task-form" 
+    *ngIf="isTaskFormVisible" 
+    (close)="hideTaskPopup()" 
+    (addNewTask)="addNewTask($event)"
+    (updateTask)="updateTask($event)"
+    (deleteTask)="deleteTask($event)">
+</app-task-form>
