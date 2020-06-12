@@ -9,6 +9,7 @@ import {
 import {
   v4 as uuid
 } from 'uuid';
+import { TodoServiceService } from '../todo-service.service';
 
 export type ItemListType = {
   id: string,
@@ -23,7 +24,8 @@ export type draggedDataType = {
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
-  styleUrls: ['./board.component.css']
+  styleUrls: ['./board.component.css'],
+  providers: [ TodoServiceService ],
 })
 export class BoardComponent implements OnInit {
   isTaskFormVisible = false;
@@ -34,58 +36,22 @@ export class BoardComponent implements OnInit {
 
   draggedData: draggedDataType = null;
 
+  toDoItemList: ItemListType;
+  inProgressItemList: ItemListType;
+  doneItemList: ItemListType;
 
-  toDoItemList: ItemListType = {
-    id: uuid(),
-    list: [{
-      name: "Invata Angular",
-      status: ListItemStatus.IN_PROGRESS,
-      id: uuid()
-    },{
-      name: "Rezolva bug-urile de pe",
-      status: ListItemStatus.TO_DO,
-      id: uuid()
-    }, {
-      name: "Fa-i evaluarea lui x-ulescu",
-      status: ListItemStatus.BLOCKED,
-      id: uuid()
-    }]
+
+  constructor(private todoService: TodoServiceService) {}
+
+  ngOnInit(): void {
+    this.todoService.getTodos()
+      .subscribe((results: any) => {
+        this.toDoItemList = results.todo;
+        this.inProgressItemList = results.inProgress;
+        this.doneItemList = results.done;
+      })
+      
   }
-
-  inProgressItemList: ItemListType = {
-    id: uuid(),
-    list: [{
-      name: "Invata Angular",
-      status: ListItemStatus.IN_PROGRESS,
-      id: uuid()
-    }, {
-      name: "Cleopatra invata pentru facultate",
-      status: ListItemStatus.TO_DO,
-      id: uuid()
-    }]
-  }
-
-  doneItemList: ItemListType = {
-    id: uuid(),
-    list: [{
-      name: "Marcus Aurelius primeste o marire de salar",
-      status: ListItemStatus.DONE,
-      id: uuid()
-    }, {
-      name: "Rezolva bug-urile",
-      status: ListItemStatus.TO_DO,
-      id: uuid()
-    }, {
-      name: "Fa-i evaluarea",
-      status: ListItemStatus.BLOCKED,
-      id: uuid()
-    }]
-  }
-
-
-  constructor() {}
-
-  ngOnInit(): void {}
 
   showUpdatePopup(item: ListItem, updatedList: ItemListType) {
     this.updatedList = updatedList;
@@ -119,35 +85,57 @@ export class BoardComponent implements OnInit {
     }
 
     this.hideTaskPopup();
-  }
-
-  updateTask(taskData) {
-    let newTask: ListItem = {
-      name: taskData.name,
-      status: taskData.status,
-      id: taskData.id
-    };
-
-    let list: Array<ListItem> = this.updatedList.list;
-    for (let i = 0; i < list.length; i++) {
-      let item = list[i];
-      if (item.id === taskData.id) {
-        list.splice(i, 1, newTask);
-      }
+    this.todoService
+      .addToList(this.updatedList.id, newTask)
+      .subscribe((response) => {
+        debugger
+      }, (err) => {
+        debugger
+      })
     }
+    
+    updateTask(taskData) {
+      let newTask: ListItem = {
+        name: taskData.name,
+        status: taskData.status,
+        id: taskData.id
+      };
 
-    this.hideTaskPopup();
-  }
-
-  deleteTask(deletableItem: ListItem) {
-    let list: Array<ListItem> = this.updatedList.list;
-    for (let i = 0; i < list.length; i++) {
-      let item = list[i];
-      if (item.id === deletableItem.id) {
-        list.splice(i, 1);
+      let list: Array<ListItem> = this.updatedList.list;
+      for (let i = 0; i < list.length; i++) {
+        let item = list[i];
+        if (item.id === taskData.id) {
+          list.splice(i, 1, newTask);
+        }
       }
+      this.todoService
+        .updateTaskInList(this.updatedList.id, taskData.id, newTask)
+        .subscribe((response) => {
+          debugger
+        }, (err) => {
+          debugger
+        })
+
+      this.hideTaskPopup();
     }
-    this.hideTaskPopup();
+    
+    deleteTask(deletableItem: ListItem) {
+      let list: Array<ListItem> = this.updatedList.list;
+      for (let i = 0; i < list.length; i++) {
+        let item = list[i];
+        if (item.id === deletableItem.id) {
+          list.splice(i, 1);
+        }
+      }
+      this.hideTaskPopup();
+
+      this.todoService
+        .removeFromList(this.updatedList.id, deletableItem.id)
+        .subscribe((response) => {
+          debugger
+        }, (err) => {
+          debugger
+        })
   }
 
   itemDragStarted(draggedItem:ListItem, fromList: ItemListType) {

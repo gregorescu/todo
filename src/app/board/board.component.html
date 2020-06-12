@@ -1,4 +1,5 @@
-<app-list class="board-list" 
+<app-list *ngIf="toDoItemList"
+class="board-list" 
 [items]="toDoItemList.list" 
 (showTaskPopup)="showTaskPopup(toDoItemList)" 
 (showUpdatePopup)="showUpdatePopup($event, toDoItemList)"
@@ -7,7 +8,8 @@
 (dragover)="itemDragOver($event)"
 (drop)="itemDrop($event, toDoItemList)"></app-list>
 
-<app-list class="board-list" 
+<app-list *ngIf="inProgressItemList"
+class="board-list" 
 [items]="inProgressItemList.list" 
 (showTaskPopup)="showTaskPopup(inProgressItemList)" 
 (showUpdatePopup)="showUpdatePopup($event, inProgressItemList)"
@@ -16,7 +18,8 @@
 (dragover)="itemDragOver($event)"
 (drop)="itemDrop($event, inProgressItemList)"></app-list>
 
-<app-list class="board-list" 
+<app-list *ngIf="doneItemList"
+class="board-list" 
 [items]="doneItemList.list" 
 (showTaskPopup)="showTaskPopup(doneItemList)" 
 (showUpdatePopup)="showUpdatePopup($event, doneItemList)"
