@@ -1,35 +1,22 @@
-# import pymongo;
-# connection = pymongo.MongoClient()
-
 import pymongo
-
-# connection = pymongo.MongoClient()
+import os
 from flask import Flask, request, make_response, jsonify
 import json
 from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
-# cors = CORS(app, resources={r"/lists/*": {"origins": "*"}})
-# cors = CORS(app, resources={
-#     r"/*": {
-#        "origins": "*"
-#     }
-# })
 CORS(app, resources=r'/*')
 app.config['CORS_HEADERS'] = 'Content-Type, Access-Control-Allow-Origin'
 app.config["DEBUG"] = True
 
-# @app.after_request
-# def after_request(response):
-#   response.headers.add('Access-Control-Allow-Origin', '*')
-#   response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-#   response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-#   return response
+SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
+json_url = os.path.join(SITE_ROOT, "", "database-config.json")
+config = json.load(open(json_url))
 
-# todosResult = json.loads(x)
-client = pymongo.MongoClient("mongodb+srv://mongoAdmin:<pass>@cluster0-qvnut.mongodb.net/todos?retryWrites=true&w=majority")
-db = client.todos
+client = pymongo.MongoClient("mongodb+srv://" + config["user"] + ":" + config["password"] + "@cluster0-qvnut.mongodb.net/" + config["database"] + "?retryWrites=true&w=majority")
+db = client[config["database"]]
 
+# GET
 @app.route('/lists', methods=['GET'])
 def getTodos():
     formatedCollection = {}
@@ -41,13 +28,7 @@ def getTodos():
 
     return formatedCollection
 
-# @app.route('/lists', methods=['OPTIONS', 'POST'])
-# @cross_origin(origin='*', allow_headers=['Content-Type', 'Access-Control-Allow-Origin'])
-# # @cross_origin(origin='http://localhost:4200',headers=['Content- Type'])
-# def addToList(list):
-#     response = flask.jsonify({'some': 'data'})
-#     return response\
-
+# POST
 def addTaskToList(listId, task):
     formatedTask = json.loads(json.dumps(task))
     db.lists.update_one(
@@ -59,74 +40,34 @@ def addTaskToList(listId, task):
 @app.route('/lists/<listId>', methods=['POST'])
 def addToList(listId):
         resp = make_response(addTaskToList(listId, request.json))
-        resp.headers['Access-Control-Allow-Origin'] = 'http://localhost:4200'
-        resp.headers['Access-Control-Allow-Methods'] = '*'
-        resp.headers['Access-Control-Allow-Domain'] = '*'
-        resp.headers['Access-Control-Allow-Credentials'] = True
-        
         return resp
 
-@app.route('/lists/<listId>', methods=['OPTIONS'])
-def preflight():
-        resp = make_response("OK")
-        resp.status_code = 201
-        resp.headers['Access-Control-Allow-Origin'] = 'http://localhost:4200'
-        resp.headers['Access-Control-Allow-Methods'] = '*'
-        resp.headers['Access-Control-Allow-Domain'] = '*'
-        resp.headers['Access-Control-Allow-Credentials'] = True
-        # Debug
-        print("Right")
+# PUT
+def updateTaskInList(listId, taskId, newTask):
+    db.lists.update_one(
+        { "id": listId, "list.id": taskId },
+        { "$set": { "list.$.name": newTask["name"], "list.$.status": newTask["status"] }}
+    )
+    return ''
+
+
+@app.route('/lists/<listId>/<taskId>', methods=['PUT'])
+def updateTask(listId, taskId):
+        resp = make_response(updateTaskInList(listId, taskId, request.json))
         return resp
 
-# def updateTaskInList(listId, taskId, newTask):
-#     formatedTask = json.loads(json.dumps(newTask))
-#     taskList = todosResult[listId]["list"]
-#     index = -1
-#     counter = 0
+# DELETE
+def deleteTaskFromList(listId, taskId):
+    db.lists.update_one(
+        { "id": listId },
+        { "$pull": { "list": { "id": taskId } } }
+    )
 
-#     for task in taskList:
-#         if task["id"] == taskId:
-#             index = counter
-#             pass
-#         counter += 1
-#         pass
+    return ''
 
-#     taskList[index] = formatedTask
-#     return ''
-
-
-# @app.route('/lists/<listId>/<taskId>', methods=['PUT'])
-# def updateTask(listId, taskId):
-#         resp = make_response(updateTaskInList(listId, taskId, request.json))
-#         resp.headers['Access-Control-Allow-Origin'] = 'http://localhost:4200'
-#         resp.headers['Access-Control-Allow-Methods'] = '*'
-#         resp.headers['Access-Control-Allow-Domain'] = '*'
-#         resp.headers['Access-Control-Allow-Credentials'] = True
+@app.route('/lists/<listId>/<taskId>', methods=['DELETE'])
+def deleteTask(listId, taskId):
+        resp = make_response(deleteTaskFromList(listId, taskId))
         
-#         return resp
-
-# def deleteTaskFromList(listId, taskId):
-#     taskList = todosResult[listId]["list"]
-#     index = -1
-#     counter = 0
-
-#     for task in taskList:
-#         if task["id"] == taskId:
-#             index = counter
-#             pass
-#         counter += 1
-#         pass
-
-#     taskList.pop(index)
-#     return ''
-
-# @app.route('/lists/<listId>/<taskId>', methods=['DELETE'])
-# def deleteTask(listId, taskId):
-#         resp = make_response(deleteTaskFromList(listId, taskId))
-#         resp.headers['Access-Control-Allow-Origin'] = 'http://localhost:4200'
-#         resp.headers['Access-Control-Allow-Methods'] = '*'
-#         resp.headers['Access-Control-Allow-Domain'] = '*'
-#         resp.headers['Access-Control-Allow-Credentials'] = True
-        
-#         return resp
+        return resp
 app.run()
