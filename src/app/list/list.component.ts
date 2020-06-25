@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ListItem } from '../types/list-item';
+import { ListItem } from '../models/todo.model';
 
 @Component({
   selector: 'app-list',
@@ -8,6 +8,7 @@ import { ListItem } from '../types/list-item';
 })
 export class ListComponent implements OnInit {
   @Input() items: Array<ListItem>;
+  @Input() name: string;
   @Output() showTaskPopup = new EventEmitter();
   @Output() showUpdatePopup = new EventEmitter<ListItem>();
   @Output() dragStart = new EventEmitter<ListItem>();
@@ -22,7 +23,6 @@ export class ListComponent implements OnInit {
   }
 
   showEditItem(item:ListItem) {
-    console.log("click")
     this.showUpdatePopup.emit(item);
   }
 

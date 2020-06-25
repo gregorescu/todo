@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ListItemStatus } from '../types/list-item';
+import { ListItemStatus } from '../models/todo.model';
 
 @Pipe({
   name: 'itemClass'

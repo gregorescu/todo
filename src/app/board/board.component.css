@@ -1,3 +1,11 @@
+.todo-lists {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
 .add-task-form {
     position: absolute;
     width: 100%;

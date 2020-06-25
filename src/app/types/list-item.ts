@@ -1,15 +1,4 @@
-export type ListItem = {
-  name: string,
-  status: ListItemStatus,
-  id: string
-}
-
-export enum ListItemStatus {
-  DONE = "Done",
-  IN_PROGRESS = "In Progress",
-  TO_DO = "To Do",
-  BLOCKED = "Blocked"
-}
+import { ListItemStatus } from '../models/todo.model';
 
 export type StatusItem = {
   name: string,

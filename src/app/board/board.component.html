@@ -1,4 +1,4 @@
-<app-list *ngIf="toDoItemList"
+<!-- <app-list *ngIf="toDoItemList"
 class="board-list" 
 [items]="toDoItemList.list" 
 (showTaskPopup)="showTaskPopup(toDoItemList)" 
@@ -26,7 +26,20 @@ class="board-list"
 (dragStart)="itemDragStarted($event, doneItemList)"
 
 (dragover)="itemDragOver($event)"
-(drop)="itemDrop($event, doneItemList)"></app-list>
+(drop)="itemDrop($event, doneItemList)"></app-list> -->
+
+<div class="todo-lists" *ngIf="todoListState$ | async as todoListState">
+    <app-list *ngFor="let list of todoListState.board.lists"
+    class="board-list" 
+    [name]=list.id
+    [items]=list.items
+    (showTaskPopup)="showTaskPopup(list)" 
+    (showUpdatePopup)="showUpdatePopup($event, list)"
+    (dragStart)="itemDragStarted($event, list)"
+
+    (dragover)="itemDragOver($event)"
+    (drop)="itemDrop($event, list)"></app-list>
+</div>
 
 <app-task-form 
     [itemForUpdate]="itemForUpdate" 

@@ -2,6 +2,7 @@ import pymongo
 import os
 from flask import Flask, request, make_response, jsonify
 import json
+import uuid
 from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
@@ -31,11 +32,13 @@ def getTodos():
 # POST
 def addTaskToList(listId, task):
     formatedTask = json.loads(json.dumps(task))
+    formatedTask["id"] = str(uuid.uuid4())
+
     db.lists.update_one(
         { "id": listId },
         { "$push": { "list": formatedTask } }
     )
-    return ''
+    return formatedTask
 
 @app.route('/lists/<listId>', methods=['POST'])
 def addToList(listId):
@@ -67,7 +70,7 @@ def deleteTaskFromList(listId, taskId):
 
 @app.route('/lists/<listId>/<taskId>', methods=['DELETE'])
 def deleteTask(listId, taskId):
-        resp = make_response(deleteTaskFromList(listId, taskId))
-        
-        return resp
+    resp = make_response(deleteTaskFromList(listId, taskId))
+    
+    return resp
 app.run()

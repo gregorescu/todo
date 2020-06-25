@@ -11,6 +11,11 @@ import { ItemClassPipe } from './pipes/item-class.pipe';
 import { TaskFormComponent } from './task-form/task-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { StoreModule } from '@ngrx/store';
+import { TodoEffects } from './stores/board/todo.effects';
+import { EffectsModule } from '@ngrx/effects';
+
+import * as TodoReducer from './stores/board/todo.reducers';
 
 @NgModule({
   declarations: [
@@ -26,7 +31,9 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    StoreModule.forRoot({board: TodoReducer.TodoReducer}),
+    EffectsModule.forRoot([TodoEffects])
   ],
   providers: [],
   bootstrap: [AppComponent]

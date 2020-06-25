@@ -19,11 +19,11 @@ export class TodoServiceService {
     return this.http.post(`http://127.0.0.1:5000/lists/${listId}`, newTask);
   }  
 
-  removeFromList(listId, taskId) {
-    return this.http.delete(`http://127.0.0.1:5000/lists/${listId}/${taskId}`);
+  removeFromList(todoId, listId) {
+    return this.http.delete(`http://127.0.0.1:5000/lists/${listId}/${todoId}`);
   }  
 
-  updateTaskInList(listId, taskId, newTask) {
-    return this.http.put(`http://127.0.0.1:5000/lists/${listId}/${taskId}`, newTask);
+  updateTaskInList(modifiedToDo, listId) {
+    return this.http.put(`http://127.0.0.1:5000/lists/${listId}/${modifiedToDo.id}`, modifiedToDo);
   }  
 }
