@@ -29,7 +29,7 @@ class="board-list"
 (drop)="itemDrop($event, doneItemList)"></app-list> -->
 
 <div class="todo-lists" *ngIf="todoListState$ | async as todoListState">
-    <app-list *ngFor="let list of todoListState.board.lists"
+    <app-list *ngFor="let list of todoListState.lists"
     class="board-list" 
     [name]=list.id
     [items]=list.items

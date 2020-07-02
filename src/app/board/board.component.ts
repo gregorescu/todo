@@ -13,7 +13,7 @@ import {
   TodoServiceService
 } from '../todo-service.service';
 import {
-  Store
+  Store, select
 } from '@ngrx/store';
 import {
   TodoListState
@@ -22,6 +22,9 @@ import {
   Observable
 } from 'rxjs';
 import * as TodoAction from '../stores/board/todo.action';
+import * as ListAction from '../stores/list/list.action';
+import { ListState } from '../stores/list/list.state';
+import { getBoardState } from '../selectors/board';
 
 export type ItemListType = {
   id: string,
@@ -54,13 +57,15 @@ export class BoardComponent implements OnInit {
 
   todoListState$: Observable < TodoListState[] > ;
 
-  constructor(private todoService: TodoServiceService, private store: Store < TodoListState[] > ) {}
+  constructor(private todoService: TodoServiceService, private store: Store < TodoListState[] >) {}
 
   ngOnInit(): void {
     this.todoListState$ = this.store.select(state => {
-      return state;
+      let newState = state.lists.loaded ? state.lists : state.board; 
+      
+      return newState;
     });
-    this.store.dispatch(new TodoAction.GetTodoLists());
+    this.store.dispatch(TodoAction.GET_TODO_LISTS());
   }
 
   showUpdatePopup(item: ListItem, updatedList: ItemListType) {
@@ -82,13 +87,16 @@ export class BoardComponent implements OnInit {
   }
 
   addNewTask(newTaskData, index: number | null = null) {
-    this.store.dispatch(new TodoAction.CreateTodo(newTaskData, this.updatedList.id, index));
+    let board = this.store.pipe(select(getBoardState));
+    board.subscribe((result) => {
+      this.store.dispatch(ListAction.CREATE_TODO({todoData: newTaskData, listId: this.updatedList.id, index: index, oldLists: result.lists }));
+    })
 
     this.hideTaskPopup();
   }
 
   updateTask(taskData) {
-    this.store.dispatch(new TodoAction.UpdateTodo({
+    this.store.dispatch(ListAction.UPDATE_TODO({
       name: taskData.name,
       status: taskData.status,
       id: taskData.id
@@ -98,7 +106,7 @@ export class BoardComponent implements OnInit {
   }
 
   deleteTask(deletableItem: ListItem) {
-    this.store.dispatch(new TodoAction.DeleteTodo(deletableItem.id, this.updatedList.id));
+    this.store.dispatch(ListAction.DELETE_TODO(deletableItem.id, this.updatedList.id));
 
     this.hideTaskPopup();
   }

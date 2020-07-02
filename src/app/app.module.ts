@@ -11,11 +11,19 @@ import { ItemClassPipe } from './pipes/item-class.pipe';
 import { TaskFormComponent } from './task-form/task-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, combineReducers, ActionReducerMap } from '@ngrx/store';
+
 import { TodoEffects } from './stores/board/todo.effects';
+import { ListEffects } from './stores/list/list.effects';
+
 import { EffectsModule } from '@ngrx/effects';
 
 import * as TodoReducer from './stores/board/todo.reducers';
+import * as ListReducer from './stores/list/list.reducers';
+import { TodoListState, TodoState } from './stores/board/todo.state';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+
+
 
 @NgModule({
   declarations: [
@@ -32,8 +40,12 @@ import * as TodoReducer from './stores/board/todo.reducers';
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
-    StoreModule.forRoot({board: TodoReducer.TodoReducer}),
-    EffectsModule.forRoot([TodoEffects])
+    // StoreModule.forRoot(reducersMap),
+    StoreModule.forRoot({board: TodoReducer.reducer, lists: ListReducer.reducer}),
+    EffectsModule.forRoot([TodoEffects, ListEffects]),
+    StoreDevtoolsModule.instrument({
+      maxAge: 5
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

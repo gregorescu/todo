@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { StatusItemList, StatusItem, ListItemStatus, ListItem } from '../types/list-item';
+import { StatusItemList, StatusItem } from '../types/list-item';
+import { ListItem, ListItemStatus } from '../models/todo.model';
 
 
 @Component({

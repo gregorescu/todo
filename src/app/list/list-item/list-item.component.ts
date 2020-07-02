@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ListItem } from 'src/app/types/list-item';
+import { ListItem } from 'src/app/models/todo.model';
 
 @Component({
   selector: 'app-list-item',
