@@ -43,11 +43,10 @@ app.listen(3000, () => {
 app.post("/login", (req, res) => {
   console.log("intra aici");
 
-  sess = req.session;
-  sess.email = req.body.email;
-  sess.visits = 1;
+  req.session.email = req.body.email;
+  req.session.visits = 1;
 
-  console.log(sess);
+  console.log(req.sessionID);
   res.end()
 });
 
@@ -64,6 +63,7 @@ function checkSession(req) {
     console.log(session);
     console.log(session.email);
     console.log(session.visits);
+    console.log(req.sessionID);
   console.log("----------------------------------------------");
 
 return;
