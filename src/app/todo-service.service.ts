@@ -12,21 +12,21 @@ export class TodoServiceService {
   constructor(private http: HttpClient) { }
 
   login() {
-    return this.http.post("http://localhost:3000/login", {email: "vasilache@vasile.ro"});  }
+    return this.http.post("http://localhost:3000/login", {email: "vasilache@vasile.ro"}, {withCredentials: true});  }
 
   getTodos() {
-    return this.http.get("http://localhost:3000/lists");
+    return this.http.get("http://localhost:3000/lists", {withCredentials: true});
   }  
 
   addToList(listId, newTask) {
-    return this.http.post(`http://localhost:3000/lists/${listId}`, newTask);
+    return this.http.post(`http://localhost:3000/lists/${listId}`, newTask, {withCredentials: true});
   }  
 
   removeFromList(listId, taskId) {
-    return this.http.delete(`http://localhost:3000/lists/${listId}/${taskId}`);
+    return this.http.delete(`http://localhost:3000/lists/${listId}/${taskId}`, {withCredentials: true});
   }  
 
   updateTaskInList(listId, taskId, newTask) {
-    return this.http.put(`http://localhost:3000/lists/${listId}/${taskId}`, newTask);
+    return this.http.put(`http://localhost:3000/lists/${listId}/${taskId}`, newTask, {withCredentials: true});
   }  
 }
