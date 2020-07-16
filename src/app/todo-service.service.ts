@@ -11,6 +11,9 @@ export class TodoServiceService {
 
   constructor(private http: HttpClient) { }
 
+  login() {
+    return this.http.post("http://localhost:3000/login", {email: "vasilache@vasile.ro"});  }
+
   getTodos() {
     return this.http.get("http://localhost:3000/lists");
   }  
